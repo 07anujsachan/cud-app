@@ -31,7 +31,7 @@ interface TextBox {
 
 function Home() {
   const [texts, setTexts] = useState<TextBox[]>([]);
-  const [selectedTextIndex, setSelectedTextIndex] = useState<number>(0);
+  const [selectedTextIndex, setSelectedTextIndex] = useState<number | null>(0);
   const [isResizing, setIsResizing] = useState(false);
   const videoRef = useRef(null);
 
@@ -47,6 +47,12 @@ function Home() {
         isEditing: false,
       },
     ]);
+  };
+  const handleIndex = (i: number) => {
+    console.log(i, selectedTextIndex);
+    if (selectedTextIndex !== i) {
+      setSelectedTextIndex(i);
+    }
   };
 
   const handleTextChange = <K extends keyof TextBox>(
@@ -104,13 +110,16 @@ function Home() {
   const handleResizeStop = () => {
     setIsResizing(false);
   };
-
+  console.log(Number(selectedTextIndex) === 0, String(0));
   return (
     <div className="flex justify-between px-4 py-20">
-      <div className="mx-auto w-2/3 relative">
+      <div
+        className="mx-auto w-2/3 relative"
+        onClick={() => setSelectedTextIndex(null)}
+      >
         <ReactPlayer
-          ref={videoRef}
           url="/mountains.mp4"
+          ref={videoRef}
           controls
           width="100%"
           height="100%"
@@ -130,6 +139,9 @@ function Home() {
               minConstraints={[60, 20]}
               onResizeStart={handleResizeStart}
               onResizeStop={handleResizeStop}
+              resizeHandles={
+                selectedTextIndex === index ? ["se", "sw", "ne", "nw"] : []
+              }
             >
               <div
                 style={{
@@ -150,7 +162,7 @@ function Home() {
                   width: `${text.width}px`,
                   height: `${text.height}px`,
                 }}
-                onClick={() => setSelectedTextIndex(index)}
+                onClick={() => handleIndex(index)}
                 onDoubleClick={() => toggleEditMode(index)}
               >
                 {text.isEditing ? (
@@ -173,6 +185,7 @@ function Home() {
                   <div
                     style={{ cursor: "text", width: "100%", height: "100%" }}
                     onClick={() => toggleEditMode(index)}
+                    className="text-xl font-semibold text-pink-600"
                   >
                     {text.text}
                   </div>
@@ -208,10 +221,14 @@ function Home() {
                 <Input
                   type="number"
                   className="w-2/5 ml-4 bg-gray-200"
-                  value={texts[selectedTextIndex]?.top}
+                  value={
+                    selectedTextIndex !== null
+                      ? texts[selectedTextIndex]?.top
+                      : ""
+                  }
                   onChange={(e) =>
                     handleTextChange(
-                      selectedTextIndex,
+                      Number(selectedTextIndex),
                       "top",
                       parseInt(e.target.value)
                     )
@@ -223,10 +240,14 @@ function Home() {
                 <Input
                   type="number"
                   className="w-2/5 ml-4 bg-gray-200"
-                  value={texts[selectedTextIndex]?.left}
+                  value={
+                    selectedTextIndex !== null
+                      ? texts[selectedTextIndex]?.left
+                      : ""
+                  }
                   onChange={(e) =>
                     handleTextChange(
-                      selectedTextIndex,
+                      Number(selectedTextIndex),
                       "left",
                       parseInt(e.target.value)
                     )
@@ -240,10 +261,14 @@ function Home() {
                 <Input
                   className="w-16 bg-gray-200 ml-3"
                   type="number"
-                  value={texts[selectedTextIndex]?.width}
+                  value={
+                    selectedTextIndex !== null
+                      ? texts[selectedTextIndex]?.width
+                      : ""
+                  }
                   onChange={(e) =>
                     handleTextChange(
-                      selectedTextIndex,
+                      Number(selectedTextIndex),
                       "width",
                       parseInt(e.target.value)
                     )
@@ -255,10 +280,14 @@ function Home() {
                 <Input
                   className="w-16 ml-3 bg-gray-200"
                   type="number"
-                  value={texts[selectedTextIndex]?.height}
+                  value={
+                    selectedTextIndex !== null
+                      ? texts[selectedTextIndex]?.height
+                      : ""
+                  }
                   onChange={(e) =>
                     handleTextChange(
-                      selectedTextIndex,
+                      Number(selectedTextIndex),
                       "height",
                       parseInt(e.target.value)
                     )
