@@ -115,7 +115,7 @@ function Home() {
     <div className="flex justify-between px-4 py-20">
       <div
         className="mx-auto w-2/3 relative"
-        onClick={() => setSelectedTextIndex(null)}
+        onDoubleClick={() => setSelectedTextIndex(null)}
       >
         <ReactPlayer
           url="/mountains.mp4"
@@ -184,7 +184,6 @@ function Home() {
                 ) : (
                   <div
                     style={{ cursor: "text", width: "100%", height: "100%" }}
-                    onClick={() => toggleEditMode(index)}
                     className="text-xl font-semibold text-pink-600"
                   >
                     {text.text}
